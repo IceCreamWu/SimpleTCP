@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import com.wyl.simpletcp.config.NetworkConfig;
 import com.wyl.simpletcp.manager.ClientManager;
-import com.wyl.simpletcp.thread.ProcessClientThread;
+import com.wyl.simpletcp.thread.ClientThread;
 
 public class TCPServer {
 
@@ -17,7 +17,7 @@ public class TCPServer {
 			while (true) {
 				Socket clientSocket = serverSocket.accept();
 				ClientManager.getInstance().addClient(clientSocket);
-				new ProcessClientThread(clientSocket).start();
+				new ClientThread(clientSocket).start();
 			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block

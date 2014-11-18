@@ -19,17 +19,24 @@ public class TCPClient {
 	private int state = TCPClient.STATE_DISCONNECTED;
 	
 	public void connect() {
-		try {
-			SocketAddress socketAddress = new InetSocketAddress(NetworkConfig.SERVER_HOST, NetworkConfig.SERVER_PORT);
-			clientSocket.connect(socketAddress);
-			state = TCPClient.STATE_CONNECTED;
-			processLoop();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (state == TCPClient.STATE_DISCONNECTED) {
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						SocketAddress socketAddress = new InetSocketAddress(NetworkConfig.SERVER_HOST, NetworkConfig.SERVER_PORT);
+						clientSocket.connect(socketAddress);
+						state = TCPClient.STATE_CONNECTED;
+						processLoop();
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}.start();
 		}
 	}
 	
@@ -61,12 +68,8 @@ public class TCPClient {
 	}
 	
 	public static void main(String[] args) {
-		final TCPClient client = new TCPClient();
-		new Thread() {
-			public void run() {
-				client.connect();
-			};
-		}.start();
+		TCPClient client = new TCPClient();
+		client.connect();
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
 			String dataString = scanner.nextLine();

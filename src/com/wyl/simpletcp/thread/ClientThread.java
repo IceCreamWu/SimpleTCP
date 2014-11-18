@@ -6,12 +6,12 @@ import java.net.Socket;
 import com.wyl.simpletcp.manager.ClientManager;
 import com.wyl.simpletcp.utils.SocketUtil;
 
-public class ProcessClientThread extends Thread{
+public class ClientThread extends Thread{
 
 	private Socket clientSocket;
 	private boolean isConnect;
 
-	public ProcessClientThread(Socket socket) {
+	public ClientThread(Socket socket) {
 		clientSocket = socket;
 		isConnect = true;
 	}
