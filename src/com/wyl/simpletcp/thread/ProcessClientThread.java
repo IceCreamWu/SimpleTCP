@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.wyl.simpletcp.manager.ClientManager;
-import com.wyl.simpletcp.utils.ByteUtil;
 import com.wyl.simpletcp.utils.SocketUtil;
 
 public class ProcessClientThread extends Thread{
