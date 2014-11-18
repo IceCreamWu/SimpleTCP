@@ -5,9 +5,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 import com.wyl.simpletcp.config.NetworkConfig;
-import com.wyl.simpletcp.utils.ByteUtil;
+import com.wyl.simpletcp.utils.SocketUtil;
 
 public class TCPClient {
 	
@@ -22,6 +23,7 @@ public class TCPClient {
 			SocketAddress socketAddress = new InetSocketAddress(NetworkConfig.SERVER_HOST, NetworkConfig.SERVER_PORT);
 			clientSocket.connect(socketAddress);
 			state = TCPClient.STATE_CONNECTED;
+			processLoop();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -31,29 +33,44 @@ public class TCPClient {
 		}
 	}
 	
-	public int getState() {
-		return state;
+	private void processLoop() {
+		while (state == TCPClient.STATE_CONNECTED) {
+			try {
+				byte[] data = SocketUtil.readData(clientSocket);
+				process(data);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				state = TCPClient.STATE_DISCONNECTED;
+				e.printStackTrace();
+			}
+		}
 	}
-	
-	public void send(String data) {
+
+	private void process(byte[] data) {
+		System.out.println("Server: " + new String(data));
+	}
+
+	public void sendData(byte[] data) {
 		try {
-			byte[] sizeBytes = ByteUtil.intToBytes(data.length());
-			clientSocket.getOutputStream().write(sizeBytes);
-			clientSocket.getOutputStream().write(data.getBytes());
+			SocketUtil.sendData(clientSocket, data);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			state = TCPClient.STATE_DISCONNECTED;
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static void main(String[] args) {
-		TCPClient client = new TCPClient();
-		client.connect();
-		if (client.getState() == TCPClient.STATE_CONNECTED) {
-			client.send("Hello World!");
-			client.send("Hello World!\n");
-			client.send("Hello World!");
+		final TCPClient client = new TCPClient();
+		new Thread() {
+			public void run() {
+				client.connect();
+			};
+		}.start();
+		Scanner scanner = new Scanner(System.in);
+		while (true) {
+			String dataString = scanner.nextLine();
+			client.sendData(dataString.getBytes());
 		}
 	}
 	

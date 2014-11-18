@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.wyl.simpletcp.config.NetworkConfig;
+import com.wyl.simpletcp.manager.ClientManager;
 import com.wyl.simpletcp.thread.ProcessClientThread;
 
 public class TCPServer {
@@ -15,6 +16,7 @@ public class TCPServer {
 			serverSocket = new ServerSocket(NetworkConfig.SERVER_PORT);
 			while (true) {
 				Socket clientSocket = serverSocket.accept();
+				ClientManager.getInstance().addClient(clientSocket);
 				new ProcessClientThread(clientSocket).start();
 			}
 		} catch (IOException e1) {
