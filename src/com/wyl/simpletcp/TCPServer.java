@@ -17,6 +17,7 @@ public class TCPServer {
 			while (true) {
 				Socket clientSocket = serverSocket.accept();
 				ClientManager.getInstance().addClient(clientSocket);
+				System.out.println("In!" + ClientManager.getInstance().getClientCount());
 				new ClientThread(clientSocket).start();
 			}
 		} catch (IOException e1) {

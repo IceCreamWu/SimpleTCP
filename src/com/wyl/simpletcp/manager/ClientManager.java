@@ -35,4 +35,8 @@ public class ClientManager {
 		}
 	}
 	
+	public synchronized int getClientCount() {
+		return clientSet.size();
+	}
+	
 }

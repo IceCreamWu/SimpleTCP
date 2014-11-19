@@ -29,6 +29,7 @@ public class ClientThread extends Thread{
 				// 连接意外关闭
 				e.printStackTrace();
 				isConnect = false;
+				System.out.println("Out!");
 				ClientManager.getInstance().removeClient(clientSocket);
 			}
 		}
@@ -42,6 +43,7 @@ public class ClientThread extends Thread{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("Out!");
 		}
 	}
 	
